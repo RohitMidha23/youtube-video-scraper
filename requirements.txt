@@ -2,3 +2,4 @@ google-api-python-client==2.74.0
 pytube==12.1.2
 PyYAML==6.0
 tqdm==4.64.1
+youtube-transcript-api==0.5.0
