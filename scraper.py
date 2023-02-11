@@ -62,14 +62,15 @@ def form_youtube_url(video_id):
     return "http://youtu.be/" + video_id
 
 
-def download_video(video_url, args):
+def download_video(video_id, args):
     dest_folder = args.dest_folder
+    video_url = form_youtube_url(video_id)
     yt = YouTube(video_url, on_progress_callback=on_progress)
     yt = yt.streams.filter(progressive=True, file_extension='mp4').order_by(
         'resolution').desc().first()
     if not os.path.exists(dest_folder):
         os.makedirs(dest_folder)
-    yt.download(dest_folder)
+    yt.download(dest_folder, filename=f'{video_id}.mp4')
 
 def download_captions(video_id, args): 
     dest_folder = args.dest_folder
@@ -81,7 +82,6 @@ if __name__ == '__main__':
     args = get_args()
     api_key = get_creds(args)
     video_ids = get_video_listings(api_key, args)
-    video_urls = [form_youtube_url(video_id) for video_id in video_ids]
-    for index, video_url in enumerate(tqdm(video_urls)):
-        download_video(video_url, args)
-        download_captions(video_ids[index], args)
+    for video_id in tqdm(video_ids):
+        download_video(video_id, args)
+        download_captions(video_id, args)
